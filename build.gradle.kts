@@ -31,7 +31,11 @@ kotlin {
     jvmToolchain(targetJavaVersion)
 }
 
-tasks.build {
+tasks.jar {
+    enabled = false
+}
+
+tasks.assemble {
     dependsOn("shadowJar")
 }
 
@@ -45,5 +49,28 @@ tasks.processResources {
     filteringCharset = "UTF-8"
     filesMatching("**/plugin.yml") {
         expand(props)
+    }
+}
+
+tasks.register("printProjectName") {
+    doLast {
+        println(project.name)
+    }
+}
+
+tasks.register("release") {
+    dependsOn("build")
+
+    doLast() {
+        if (!version.toString().endsWith("-SNAPSHOT")) {
+            // Rename final JAR to trim off version information
+            tasks.shadowJar {
+                archiveFile.get().asFile
+                    .renameTo(
+                        File(layout.buildDirectory.get().toString() + File.separator + "libs" + File.separator
+                                + rootProject.name + ".jar")
+                    )
+            }
+        }
     }
 }
