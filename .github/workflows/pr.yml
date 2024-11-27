@@ -12,6 +12,10 @@ concurrency:
   group: ${{ format('{0}-{1}', github.workflow, github.ref) }}
   cancel-in-progress: true
 
+env:
+  GITHUB_USER_REF: ${{ github.actor }}
+  GITHUB_TOKEN_REF: ${{ secrets.GH_PACKAGE_REPO_PASSWORD }}
+
 jobs:
   test:
     name: Run unit tests

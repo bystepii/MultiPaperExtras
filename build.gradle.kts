@@ -8,22 +8,37 @@ version = "1.0-SNAPSHOT"
 description = "Extra commands for MultiPaper"
 
 repositories {
-    mavenCentral()
+    mavenLocal()
+    maven {
+        url = uri("https://maven.pkg.github.com/bystepii/MultiPaper")
+        credentials {
+            username = project.findProperty("gpr.user") as String? ?: System.getenv("GITHUB_USER_REF")
+            password = project.findProperty("gpr.key") as String? ?: System.getenv("GITHUB_TOKEN_REF")
+        }
+    }
     maven("https://repo.papermc.io/repository/maven-public/") {
         name = "papermc-repo"
     }
-    maven("https://repo.clojars.org/") {
-        name = "clojars"
+    maven("https://hub.spigotmc.org/nexus/content/groups/public/") {
+        name = "spigotmc-repo"
+    }
+    maven("https://repo.aikar.co/content/groups/aikar/") {
+        name = "aikar"
     }
     maven("https://oss.sonatype.org/content/groups/public/") {
         name = "sonatype"
     }
+    mavenCentral()
 }
 
 dependencies {
+    compileOnly("puregero.multipaper:multipaper-api:1.20.1-R0.1-SNAPSHOT")
     compileOnly("io.papermc.paper:paper-api:1.20.1-R0.1-SNAPSHOT")
+    compileOnly("org.spigotmc:spigot-api:1.20.1-R0.1-SNAPSHOT")
+    compileOnly("dev.cubxity.plugins:unifiedmetrics-api:0.3.8")
+    implementation("co.aikar:acf-paper:0.5.1-SNAPSHOT")
     implementation("org.jetbrains.kotlin:kotlin-stdlib-jdk8")
-    implementation("com.github.puregero:multilib:1.2.4")
+    //implementation("com.github.puregero:multilib:1.2.4")
 }
 
 val targetJavaVersion = 17
