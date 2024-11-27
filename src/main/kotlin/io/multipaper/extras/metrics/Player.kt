@@ -31,6 +31,10 @@ class Player(plugin: Plugin) : CollectorCollection {
                 val chunk = player.location.chunk
                 val chunkOwner = if (chunk.isExternalChunk) chunk.externalServerName
                 else if (chunk.isLocalChunk) serverName
+                else if (!chunk.isLoaded) {
+                    logger.warning("Chunk is not loaded: $chunk")
+                    "unloaded"
+                }
                 else {
                     logger.warning("Chunk is not local or external: $chunk")
                     "unknown"
