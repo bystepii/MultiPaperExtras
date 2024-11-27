@@ -55,6 +55,7 @@ repositories {
     maven("https://oss.sonatype.org/content/groups/public/") {
         name = "sonatype"
     }
+    maven { url = uri("https://oss.sonatype.org/content/repositories/snapshots") }
     mavenCentral()
 }
 
@@ -62,6 +63,7 @@ dependencies {
     compileOnly("puregero.multipaper:multipaper-api:1.20.1-R0.1-SNAPSHOT")
     compileOnly("io.papermc.paper:paper-api:1.20.1-R0.1-SNAPSHOT")
     compileOnly("org.spigotmc:spigot-api:1.20.1-R0.1-SNAPSHOT")
+    compileOnly("me.lucko:spark-api:0.1-SNAPSHOT")
     compileOnly("dev.cubxity.plugins:unifiedmetrics-api:0.3.8")
     implementation("co.aikar:acf-paper:0.5.1-SNAPSHOT")
     implementation("org.jetbrains.kotlin:kotlin-stdlib-jdk8")
