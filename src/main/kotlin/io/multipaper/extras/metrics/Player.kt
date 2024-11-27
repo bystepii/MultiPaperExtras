@@ -29,13 +29,12 @@ class Player(plugin: Plugin) : CollectorCollection {
             val metric = mutableListOf<Metric>()
             for (player in Bukkit.getLocalOnlinePlayers()) {
                 val chunk = player.location.chunk
-                var chunkOwner = ""
-                if (chunk.isExternalChunk)
-                    chunkOwner = chunk.externalServerName
-                else if (chunk.isLocalChunk)
-                    chunkOwner = serverName
-                else
+                val chunkOwner = if (chunk.isExternalChunk) chunk.externalServerName
+                else if (chunk.isLocalChunk) serverName
+                else {
                     logger.warning("Chunk is not local or external: $chunk")
+                    "unknown"
+                }
                 metric.add(GaugeMetric("mc_player_location", mapOf(
                     "name" to player.name,
                     "world" to player.world.name,
