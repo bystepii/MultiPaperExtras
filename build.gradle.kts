@@ -1,11 +1,38 @@
+import java.text.SimpleDateFormat
+import java.util.*
+
 plugins {
     kotlin("jvm") version "2.1.0-RC2"
     id("com.github.johnrengelman.shadow") version "8.1.1"
 }
 
 group = "io.multipaper"
-version = "1.0-SNAPSHOT"
 description = "Extra commands for MultiPaper"
+
+// Set version to version property if supplied
+val shortVersion = if (project.hasProperty("ver")) {
+    val ver = project.property("ver") as String
+    if (ver.startsWith("v", ignoreCase = true)) {
+        ver.substring(1).uppercase()
+    } else {
+        ver.uppercase()
+    }
+}
+else {
+    null
+}
+
+// If the tag includes "-RC-" or no tag is supplied, append "-SNAPSHOT"
+val version = when {
+    shortVersion.isNullOrEmpty() -> "${getTime()}-SNAPSHOT"
+    "-RC-" in shortVersion -> {
+        val rcIndex = shortVersion.indexOf("-RC-")
+        "${shortVersion.substring(0, rcIndex)}-SNAPSHOT"
+    }
+    else -> shortVersion
+}
+
+project.version = version
 
 repositories {
     mavenLocal()
@@ -88,4 +115,10 @@ tasks.register("release") {
             }
         }
     }
+}
+
+fun getTime(): String {
+    val sdf = SimpleDateFormat("yyMMdd-HHmm")
+    sdf.timeZone = TimeZone.getTimeZone("UTC")
+    return sdf.format(Date())
 }
