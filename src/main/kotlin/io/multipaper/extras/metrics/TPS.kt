@@ -15,7 +15,8 @@ class TPS : CollectorCollection {
 
         override fun collect(): List<Metric> {
             val tps = spark.tps()?.poll(StatisticWindow.TicksPerSecond.SECONDS_5) ?: 0.0
-            return listOf(GaugeMetric("mc_tps", emptyMap(), tps))
+            // Cap TPS at 20 (ignore catch-up ticks)
+            return listOf(GaugeMetric("mc_tps", emptyMap(), if (tps > 20.0) 20.0 else tps))
         }
     }
 }
