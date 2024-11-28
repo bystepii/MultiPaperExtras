@@ -33,11 +33,11 @@ class Player(plugin: Plugin) : CollectorCollection {
                 else if (chunk.isLocalChunk) serverName
                 else if (!chunk.isLoaded) {
                     logger.warning("Chunk is not loaded: $chunk")
-                    "unloaded"
+                    ""
                 }
                 else {
                     logger.warning("Chunk is not local or external: $chunk")
-                    "unknown"
+                    ""
                 }
                 metric.add(GaugeMetric("mc_player_location", mapOf(
                     "name" to player.name,
