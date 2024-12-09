@@ -12,14 +12,36 @@ import org.bukkit.plugin.java.JavaPlugin
 class MultiPaperExtras : JavaPlugin() {
 
     override fun onEnable() {
-        val manager = PaperCommandManager(this)
-        manager.registerCommand(MPChunk())
         UnifiedMetricsProvider.get().metricsManager.registerCollection(TPS())
-        UnifiedMetricsProvider.get().metricsManager.registerCollection(Player(this))
-        UnifiedMetricsProvider.get().metricsManager.registerCollection(Chunk())
+        if (isMultiPaper()) {
+            val manager = PaperCommandManager(this)
+            manager.registerCommand(MPChunk())
+            UnifiedMetricsProvider.get().metricsManager.registerCollection(Player(this))
+            UnifiedMetricsProvider.get().metricsManager.registerCollection(Chunk())
+        }
     }
 
     override fun onDisable() {
         // Plugin shutdown logic
+    }
+
+    fun isFolia(): Boolean {
+        try {
+            Class.forName("io.papermc.paper.threadedregions.RegionizedServer")
+            return true
+        } catch (e: ClassNotFoundException) {
+            return false
+        }
+    }
+
+    private fun isMultiPaper(): Boolean {
+        try {
+            Player::class.java.getMethod("isExternalPlayer")
+            return true
+        } catch (e: NoSuchMethodException) {
+            return false
+        } catch (e: NoSuchMethodError) {
+            return false
+        }
     }
 }
