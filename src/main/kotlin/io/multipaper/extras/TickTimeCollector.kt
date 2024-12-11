@@ -62,9 +62,9 @@ class TickTimeCollector(val plugin: Plugin) {
         }
 
         if (farthest == -1) {
-            plugin.logger.warning("Error: No change in tickTime array.")
-            //printArray(prev)
-            //printArray(curr)
+            plugin.logger.warning("No change in tickTime array: ")
+            plugin.logger.warning("prev: " + printArray(prev))
+            plugin.logger.warning("curr: " + printArray(curr))
             return LongArray(1)
         } else {
             return getNonZero(diff, farthest, 50)
@@ -100,5 +100,18 @@ class TickTimeCollector(val plugin: Plugin) {
         }
 
         return temp
+    }
+
+    private fun printArray(array: LongArray): String {
+        val sb = StringBuilder()
+        sb.append("[ ")
+        for (i in array.indices) {
+            sb.append(array[i])
+            if (i != array.size - 1) {
+                sb.append(", ")
+            }
+        }
+        sb.append(" ]")
+        return sb.toString()
     }
 }
