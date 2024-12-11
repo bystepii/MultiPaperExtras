@@ -13,7 +13,9 @@ class MultiPaperExtras : JavaPlugin() {
 
     override fun onEnable() {
         dataFolder.mkdirs()
-        TickTimeCollector(this)
+        if (!isFolia())
+            // getTickTimes() is not available in Folia
+            TickTimeCollector(this)
         UnifiedMetricsProvider.get().metricsManager.registerCollection(TPS())
         if (isMultiPaper()) {
             val manager = PaperCommandManager(this)
