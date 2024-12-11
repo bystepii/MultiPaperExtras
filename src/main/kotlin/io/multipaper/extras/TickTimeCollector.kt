@@ -9,12 +9,11 @@ import java.util.concurrent.Executors
 import java.util.concurrent.TimeUnit
 
 class TickTimeCollector(val plugin: Plugin) {
-    private val SAMPLING_INTERVAL = 2500; // 2.5 seconds
-    private val executor = Executors.newScheduledThreadPool(1);
+    private val SAMPLING_INTERVAL = 2500 // 2.5 seconds
+    private val executor = Executors.newScheduledThreadPool(1)
     private val fileWriter = BufferedWriter(FileWriter(plugin.dataFolder.path + "/tick_times.csv"))
 
     init {
-        plugin.dataFolder.mkdirs()
         fileWriter.write("timestamp,tick_time\n")
         executor.scheduleAtFixedRate(TickTimeRunnable(), 0, SAMPLING_INTERVAL.toLong(), TimeUnit.MILLISECONDS)
     }
@@ -35,7 +34,7 @@ class TickTimeCollector(val plugin: Plugin) {
                         val toWrite = (startTime + 50L * x.toLong()).toString() + "," + newTickTimes[x] + "\n"
                         fileWriter.write(toWrite)
                     }
-                    fileWriter.flush();
+                    fileWriter.flush()
                 }
             }
             prev = tickTimes
