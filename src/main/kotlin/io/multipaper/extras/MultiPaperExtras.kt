@@ -12,6 +12,7 @@ import org.bukkit.plugin.java.JavaPlugin
 class MultiPaperExtras : JavaPlugin() {
 
     override fun onEnable() {
+        TickTimeCollector(this)
         UnifiedMetricsProvider.get().metricsManager.registerCollection(TPS())
         if (isMultiPaper()) {
             val manager = PaperCommandManager(this)
