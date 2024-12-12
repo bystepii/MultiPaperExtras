@@ -4,4 +4,5 @@ description: ${description}
 main: io.multipaper.extras.MultiPaperExtras
 api-version: '1.20'
 folia-supported: true
+depend: [ spark, UnifiedMetrics ]
 authors: [ bystepii ]
