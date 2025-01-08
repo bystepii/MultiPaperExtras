@@ -40,7 +40,7 @@ class MultiPaperExtras : JavaPlugin() {
 
     private fun isMultiPaper(): Boolean {
         try {
-            Player::class.java.getMethod("isExternalPlayer")
+            org.bukkit.entity.Player::class.java.getMethod("isExternalPlayer")
             return true
         } catch (e: NoSuchMethodException) {
             return false
