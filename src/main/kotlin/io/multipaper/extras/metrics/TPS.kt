@@ -6,6 +6,9 @@ import dev.cubxity.plugins.metrics.api.metric.data.GaugeMetric
 import dev.cubxity.plugins.metrics.api.metric.data.Metric
 import me.lucko.spark.api.SparkProvider
 import me.lucko.spark.api.statistic.StatisticWindow
+import me.lucko.spark.api.statistic.misc.DoubleAverageInfo
+import java.util.*
+import kotlin.math.min
 
 class TPS : CollectorCollection {
     override val collectors = listOf(TPSCollector())
@@ -14,9 +17,26 @@ class TPS : CollectorCollection {
         private val spark = SparkProvider.get()
 
         override fun collect(): List<Metric> {
-            val tps = spark.tps()?.poll(StatisticWindow.TicksPerSecond.SECONDS_5) ?: 0.0
-            // Cap TPS at 20 (ignore catch-up ticks)
-            return listOf(GaugeMetric("mc_tps", emptyMap(), if (tps > 20.0) 20.0 else tps))
+            val tps = min(spark.tps()?.poll(StatisticWindow.TicksPerSecond.SECONDS_5) ?: 0.0, 20.0)
+            val tpsMetrics = StatisticWindow.TicksPerSecond.entries.map {
+                it.name to min(spark.tps()?.poll(it) ?: 0.0, 20.0)
+            }.map {
+                GaugeMetric("mc_tps_" + it.first.lowercase(Locale.getDefault()), emptyMap(), it.second)
+            }
+
+            val mspt = spark.mspt()?.poll(StatisticWindow.MillisPerTick.SECONDS_10) ?: 0.0
+            val msptMetrics = StatisticWindow.MillisPerTick.entries.map {
+                it.name to spark.mspt()?.poll(it)
+            }.map {
+                DoubleAverageInfo::class.java.declaredMethods.map { method ->
+                    val name = method.name
+                    GaugeMetric("mc_mspt_"
+                            + it.first.lowercase(Locale.getDefault()) + "_"
+                            + name.lowercase(Locale.getDefault()), emptyMap(), method.invoke(it.second) as Double)
+                }
+            }.flatten()
+
+            return listOf(GaugeMetric("mc_tps", emptyMap(), tps)) + tpsMetrics + msptMetrics
         }
     }
 }
