@@ -28,7 +28,7 @@ class TPS : CollectorCollection {
             val msptMetrics = StatisticWindow.MillisPerTick.entries.map {
                 it.name to spark.mspt()?.poll(it)
             }.map {
-                DoubleAverageInfo::class.java.declaredMethods.map { method ->
+                DoubleAverageInfo::class.java.declaredMethods.filter { it.parameterCount == 0 }.map { method ->
                     val name = method.name
                     GaugeMetric("mc_mspt_"
                             + it.first.lowercase(Locale.getDefault()) + "_"
